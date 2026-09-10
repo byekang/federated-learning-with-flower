@@ -1,0 +1,9 @@
+# Created during the lab - never commit
+.venv/
+data/
+logs/
+results/
+__pycache__/
+.ipynb_checkpoints/
+*.pid
+nohup.out
