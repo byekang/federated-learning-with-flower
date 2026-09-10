@@ -60,7 +60,7 @@ python3 -m venv --system-site-packages .venv
 .venv/bin/python -m ipykernel install --user --name fl-aml --display-name "Python (fl-AML)"
 
 # 2. Start Jupyter and open fl_aml_hands_on.ipynb with the "Python (fl-AML)" kernel
-.venv/bin/jupyter lab --no-browser
+.venv/bin/python -m jupyterlab --no-browser
 ```
 
 The notebook walks through everything else: downloading and verifying the
