@@ -60,6 +60,12 @@ python3 -m venv --system-site-packages .venv
 .venv/bin/python -m ipykernel install --user --name fl-aml --display-name "Python (fl-AML)"
 ```
 
+Note: on hosts with a pre-populated Python environment (e.g. SageMaker
+Studio's conda base), pip may print a dependency-resolver "ERROR" about
+unrelated system packages (such as `typer-slim` requiring a newer `typer`).
+As long as the log ends with `Successfully installed ... flwr-1.36.0 ...`,
+this is harmless for the lab - nothing here uses those packages.
+
 Then open `fl_aml_hands_on.ipynb` with the **Python (fl-AML)** kernel.
 
 If you are already inside a Jupyter environment (SageMaker Studio, JupyterHub,
