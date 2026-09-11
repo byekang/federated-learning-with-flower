@@ -145,9 +145,10 @@ deployment. To distribute it:
 - **PaySim**: E. A. Lopez-Rojas, A. Elmir, and S. Axelsson, "PaySim: A
   financial mobile money simulator for fraud detection" (EMSS 2016).
   Published on Kaggle as [`ealaxi/paysim1`](https://www.kaggle.com/ealaxi/paysim1);
-  downloaded here from a public HuggingFace mirror
-  ([`theman10/paysim`](https://huggingface.co/datasets/theman10/paysim)).
-  6,362,620 transactions, 8,213 labeled frauds.
+  downloaded here as a gzip-compressed copy from an S3 mirror, with the public
+  HuggingFace mirror
+  ([`theman10/paysim`](https://huggingface.co/datasets/theman10/paysim)) as a
+  fallback. 6,362,620 transactions, 8,213 labeled frauds.
 - **Flower** federated learning framework: https://flower.ai (Apache-2.0).
 - The IID logistic-regression experiment replicates the setup described in a
   STADLE (TieSet Inc.) case study of FL for AML on PaySim.

@@ -1,15 +1,26 @@
-"""Download the PaySim dataset from a public mirror and verify its integrity.
+"""Download the PaySim dataset and verify its integrity.
 
-Mirror: HuggingFace dataset `theman10/paysim` (raw CSV of Kaggle ealaxi/paysim1).
-Hard-fails if the row count or fraud count does not match the published dataset.
+Sources, tried in order:
+1. Compressed mirror on S3 (~185 MB gzip, fastest)
+2. Raw CSV from the HuggingFace mirror of Kaggle ealaxi/paysim1 (~470 MB)
+
+Hard-fails if the row count or fraud count does not match the published
+dataset.
 """
 
+import gzip
+import shutil
 import sys
 import time
 import urllib.request
 from pathlib import Path
 
-URL = "https://huggingface.co/datasets/theman10/paysim/resolve/main/paysim.csv"
+SOURCES = [
+    ("https://byekang-share-materials.s3.ap-northeast-2.amazonaws.com"
+     "/github-share-files/paysim.csv.gz", True),
+    ("https://huggingface.co/datasets/theman10/paysim/resolve/main/paysim.csv",
+     False),
+]
 EXPECTED_BYTES = 493_534_783
 EXPECTED_ROWS = 6_362_620
 EXPECTED_FRAUDS = 8_213
@@ -22,15 +33,32 @@ def log(msg: str) -> None:
     print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}", flush=True)
 
 
+def fetch(url: str, gzipped: bool) -> None:
+    tmp = CSV_PATH.with_suffix(".csv.part")
+    log(f"downloading {url}")
+    if gzipped:
+        with urllib.request.urlopen(url) as resp, \
+                gzip.GzipFile(fileobj=resp) as gz, open(tmp, "wb") as out:
+            shutil.copyfileobj(gz, out, length=1 << 20)
+    else:
+        urllib.request.urlretrieve(url, tmp)
+    tmp.rename(CSV_PATH)
+    log(f"downloaded {CSV_PATH.stat().st_size} bytes")
+
+
 def download() -> None:
     if CSV_PATH.exists() and CSV_PATH.stat().st_size == EXPECTED_BYTES:
         log(f"already downloaded: {CSV_PATH} ({CSV_PATH.stat().st_size} bytes)")
         return
-    log(f"downloading {URL}")
-    tmp = CSV_PATH.with_suffix(".csv.part")
-    urllib.request.urlretrieve(URL, tmp)
-    tmp.rename(CSV_PATH)
-    log(f"downloaded {CSV_PATH.stat().st_size} bytes")
+    last_error: Exception | None = None
+    for url, gzipped in SOURCES:
+        try:
+            fetch(url, gzipped)
+            return
+        except Exception as exc:  # noqa: BLE001 - fall through to next mirror
+            last_error = exc
+            log(f"WARNING: download from {url} failed ({exc}); trying next source")
+    raise RuntimeError(f"all download sources failed: {last_error}")
 
 
 def verify() -> None:
