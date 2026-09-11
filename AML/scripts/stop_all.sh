@@ -15,6 +15,7 @@ for PIDFILE in "$ROOT"/logs/*.pid; do
     rm -f "$PIDFILE"
 done
 
-# safety net for orphaned flower processes from this project
-pkill -f "$ROOT/.venv/bin/flower-super" 2>/dev/null && echo "killed orphaned flower processes"
+# safety net for orphaned flower processes started by this user
+pkill -u "$USER" -f "flower-superlink|flower-supernode|flower-superexec" 2>/dev/null \
+    && echo "killed orphaned flower processes"
 exit 0

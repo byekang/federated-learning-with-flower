@@ -25,8 +25,11 @@ echo "=== Experiment progress ==="
 for MODEL in logreg mlp; do
     AGG="$ROOT/results/$MODEL/aggregated_metrics.json"
     LOC="$ROOT/results/$MODEL/local_metrics.json"
+    PY="$ROOT/.venv/bin/python"
+    [[ -x "$PY" ]] || PY="${VIRTUAL_ENV:+$VIRTUAL_ENV/bin/python}"
+    [[ -n "$PY" && -x "$PY" ]] || PY="python3"
     if [[ -f "$AGG" ]]; then
-        "$ROOT/.venv/bin/python" - "$MODEL" "$AGG" "$LOC" <<'EOF'
+        "$PY" - "$MODEL" "$AGG" "$LOC" <<'EOF'
 import json, sys
 model, agg_path, loc_path = sys.argv[1:4]
 agg = json.load(open(agg_path))

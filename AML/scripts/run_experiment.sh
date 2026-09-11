@@ -3,6 +3,7 @@
 # Usage: run_experiment.sh <logreg|mlp> [num_rounds] [min_nodes] [partitions_dir] [results_name]
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$ROOT/scripts/flower_env.sh"
 MODEL="${1:?usage: run_experiment.sh <logreg|mlp> [num_rounds] [min_nodes] [partitions_dir] [results_name]}"
 ROUNDS="${2:-10}"
 MIN_NODES="${3:-10}"
@@ -21,7 +22,7 @@ if ! grep -q "\[superlink.local-deployment\]" "$CFG" 2>/dev/null; then
 fi
 
 cd "$ROOT"
-"$ROOT/.venv/bin/flwr" run . local-deployment --stream --run-config \
+"$BIN/flwr" run . local-deployment --stream --run-config \
     "model-type=\"$MODEL\" num-server-rounds=$ROUNDS min-nodes=$MIN_NODES partitions-dir=\"$PARTS\" data-dir=\"$ROOT/data\" results-dir=\"$ROOT/results/$NAME\"" \
     2>&1 | tee "$LOG"
 echo "run log: $LOG"
