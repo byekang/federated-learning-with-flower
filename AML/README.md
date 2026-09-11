@@ -54,12 +54,21 @@ Requirements: Linux, Python >= 3.11, ~2 GB of free disk for the dataset.
 git clone https://github.com/byekang/federated-learning-with-flower
 cd federated-learning-with-flower/AML
 
-# 1. Environment
+# 1. Environment (creates the venv and registers the notebook kernel)
 python3 -m venv --system-site-packages .venv
-.venv/bin/pip install "flwr==1.36.0" pyarrow scikit-learn pandas torch matplotlib jupyter ipykernel
+.venv/bin/pip install "flwr==1.36.0" pyarrow scikit-learn pandas torch matplotlib ipykernel
 .venv/bin/python -m ipykernel install --user --name fl-aml --display-name "Python (fl-AML)"
+```
 
-# 2. Start Jupyter and open fl_aml_hands_on.ipynb with the "Python (fl-AML)" kernel
+Then open `fl_aml_hands_on.ipynb` with the **Python (fl-AML)** kernel.
+
+If you are already inside a Jupyter environment (SageMaker Studio, JupyterHub,
+VS Code, ...), no further setup is needed - refresh the kernel list and select
+the kernel. Only on a bare machine with no Jupyter running, install and start
+one:
+
+```bash
+.venv/bin/pip install jupyterlab
 .venv/bin/python -m jupyterlab --no-browser
 ```
 
